@@ -123,6 +123,9 @@ function throwIfContextDestroyed(
   }
 }
 
+// A frame's page-script context is that frame's main world, so it is announced with isDefault true,
+// as Chrome does. Playwright and Puppeteer only attach a context to a frame as its main world on
+// that flag, and every evaluate in the frame waits for one.
 export function emitOopifExecutionContext(ctx: DispatchCtx, frame: FrameState): void {
   if (!frame.pageScript || frame.execContextId <= 0) return;
   for (const sid of ctx.browser.runtimeEnabledSessions) {
@@ -135,7 +138,7 @@ export function emitOopifExecutionContext(ctx: DispatchCtx, frame: FrameState): 
           name: frame.url,
           uniqueId: `ctx-oopif-${frame.execContextId}`,
           auxData: {
-            isDefault: false,
+            isDefault: true,
             type: "default",
             frameId: frame.frameId,
           },
@@ -214,7 +217,7 @@ export async function handleRuntime(ctx: DispatchCtx, req: CdpRequest): Promise<
                 name: f.url,
                 uniqueId: `ctx-oopif-${f.execContextId}`,
                 auxData: {
-                  isDefault: false,
+                  isDefault: true,
                   type: "default",
                   frameId: f.frameId,
                 },
