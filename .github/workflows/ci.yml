@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/actions/setup
         with:
           bazel-cache: "true"
-          bazelflare: "true"
+          bazelflare: "false"
       - run: pnpm install --frozen-lockfile
       - run: bazel test --keep_going --test_output=errors //:check //:rust_lint //packages/core:host_tests //packages/engine:vitest
       - run: pnpm run build
